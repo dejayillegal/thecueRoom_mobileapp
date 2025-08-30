@@ -8,6 +8,7 @@
     "ts-node": "^10.9.2"
   },
   "scripts": {
-    "seed": "ts-node seed.ts"
+    "seed": "ts-node seed.ts",
+    "typecheck:deno": "DENO_NO_PACKAGE_JSON=1 sh -c 'deno check $(find functions -name \"*.ts\" ! -name \"*.test.ts\")'"
   }
 }
