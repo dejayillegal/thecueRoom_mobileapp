@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": false,
+    "resolveJsonModule": true,
+    "rootDir": ".",
+    "jsx": "react-jsx",
+    "lib": ["ES2021", "DOM"]
+  },
+  "include": ["shared/**/*", "supabase/seed.ts"],
+  "exclude": ["node_modules", "mobile/**/*", "admin/**/*", "supabase/functions/**/*"]
+}
