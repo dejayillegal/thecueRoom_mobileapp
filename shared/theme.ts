@@ -1,17 +1,24 @@
 export const theme = {
   colors: {
-    background: '#0B0B0B',
-    surface: '#111111',
-    primary: '#D1FF3D',
-    accent: '#873BBF',
-    text: '#FFFFFF',
-    textMuted: '#C7C7C7',
-    border: '#1E1E1E'
+    bg: '#080808',
+    fg: '#E6E6E6',
+    muted: '#0F0F0F',
+    grid: '#161616',
+    card: '#0B0B0B',
+    border: '#151515',
+    lime: '#D1E231',
+    purple: '#873BBF',
+    white: '#FFFFFF'
   },
   fonts: {
     heading: 'Inter-Black',
     body: 'Inter-Regular',
     mono: 'SourceCodePro-Regular'
+  },
+  animations: {
+    driftSlow: 36000,
+    driftMed: 28000,
+    blink: 10000
   }
 } as const;
 

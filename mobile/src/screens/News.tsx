@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, Text } from 'react-native';
 import Parser from 'rss-parser';
+import { theme } from '../../../shared/theme';
 
 export default function News() {
   const [items, setItems] = useState<{ title?: string }[]>([]);
@@ -14,7 +15,9 @@ export default function News() {
     <FlatList
       data={items}
       keyExtractor={(item, idx) => String(idx)}
-      renderItem={({ item }) => <Text style={{ color: 'white', padding: 8 }}>{item.title}</Text>}
+      renderItem={({ item }) => (
+        <Text style={{ color: theme.colors.fg, padding: 8 }}>{item.title}</Text>
+      )}
     />
   );
 }
