@@ -22,6 +22,7 @@
     "node_modules",
     "mobile/**/*",
     "admin/**/*",
-    "supabase/functions/**/index.ts"
+    "supabase/functions/**/index.ts",
+    "supabase/functions/utils/client.ts"
   ]
 }
