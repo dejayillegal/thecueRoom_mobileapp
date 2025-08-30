@@ -13,6 +13,15 @@
     "jsx": "react-jsx",
     "lib": ["ES2021", "DOM"]
   },
-  "include": ["shared/**/*", "supabase/seed.ts"],
-  "exclude": ["node_modules", "mobile/**/*", "admin/**/*", "supabase/functions/**/*"]
+  "include": [
+    "shared/**/*",
+    "supabase/seed.ts",
+    "supabase/functions/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "mobile/**/*",
+    "admin/**/*",
+    "supabase/functions/**/index.ts"
+  ]
 }
