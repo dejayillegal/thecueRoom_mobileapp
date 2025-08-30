@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, FlatList, Image, Pressable } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import { theme } from '../../../shared/theme';
 
 const posts = [
   { id: '1', type: 'text', content: 'Welcome to thecueRoom!' },
@@ -18,7 +19,7 @@ export default function Feed() {
       renderItem={({ item }) => (
         <View style={{ padding: 16 }}>
           {item.type === 'text' ? (
-            <Text style={{ color: 'white' }}>{item.content}</Text>
+            <Text style={{ color: theme.colors.fg }}>{item.content}</Text>
           ) : (
             <Image source={{ uri: item.content }} style={{ width: 200, height: 200 }} />
           )}
@@ -30,7 +31,7 @@ export default function Feed() {
             }}
           >
             <Animated.View
-              style={[{ width: 20, height: 20, backgroundColor: '#D1FF3D', marginTop: 8 }, anim]}
+              style={[{ width: 20, height: 20, backgroundColor: theme.colors.lime, marginTop: 8 }, anim]}
             />
           </Pressable>
         </View>

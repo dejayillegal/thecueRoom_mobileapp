@@ -1,5 +1,5 @@
 import { theme } from './theme';
 
-test('theme has lime primary', () => {
-  expect(theme.colors.primary).toBe('#D1FF3D');
+test('theme exposes lime color', () => {
+  expect(theme.colors.lime).toBe('#D1E231');
 });
