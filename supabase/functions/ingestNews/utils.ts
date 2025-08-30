@@ -8,6 +8,8 @@ export interface NewsItem {
   title: string;
   link: string;
   source: string;
+  category?: string;
+  region?: string;
 }
 
 interface ParserLike {
@@ -37,4 +39,36 @@ export async function fetchFeeds(
     }
   }
   return Array.from(deduped.values());
+}
+
+const CATEGORY_KEYWORDS: Record<string, string[]> = {
+  events: ['festival', 'gig', 'event'],
+  releases: ['album', 'track', 'release'],
+  features: ['interview', 'feature']
+};
+
+export function inferCategory(item: NewsItem): string {
+  const lower = item.title.toLowerCase();
+  for (const [category, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
+    if (keywords.some((k) => lower.includes(k))) {
+      return category;
+    }
+  }
+  return 'general';
+}
+
+const REGION_KEYWORDS: Record<string, string[]> = {
+  europe: ['berlin', 'london', 'paris'],
+  asia: ['bangalore', 'mumbai', 'tokyo'],
+  america: ['new york', 'los angeles', 'chicago']
+};
+
+export function inferRegion(item: NewsItem): string {
+  const lower = item.title.toLowerCase();
+  for (const [region, keywords] of Object.entries(REGION_KEYWORDS)) {
+    if (keywords.some((k) => lower.includes(k))) {
+      return region;
+    }
+  }
+  return 'global';
 }
