@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "expo start --clear",
-    "test": "jest"
+    "test": "jest",
+    "clean": "rm -rf node_modules package-lock.json ios/Pods ios/Podfile.lock android/.gradle android/build",
+    "postinstall": "npx expo install --fix || true"
   },
   "dependencies": {
     "expo": "^51.0.0",
@@ -14,7 +16,7 @@
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/bottom-tabs": "^6.5.11",
     "react-native-svg": "^15.2.0",
-    "react-native-maps": "^1.10.0",
+    "react-native-maps": "1.24.1",
     "expo-secure-store": "~13.0.2",
     "@supabase/supabase-js": "^2.39.3",
     "zustand": "^4.5.2",
@@ -28,5 +30,8 @@
     "@types/react-native": "^0.73.0",
     "ts-jest": "^29.1.1",
     "typescript": "^5.4.5"
+  },
+  "overrides": {
+    "react-native-maps": "1.24.1"
   }
 }

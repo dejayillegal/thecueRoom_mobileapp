@@ -1,0 +1,55 @@
+name: Backend (Supabase) – Link, Migrate, Deploy Functions
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "supabase/**"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}   # must start with sbp_
+      SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}     # heaztitsbnotkozmhubw
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}     # DB password (not anon/service key)
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          # no "v" prefix
+          version: 2.39.2
+
+      - name: Validate PAT shape
+        run: |
+          [[ "$SUPABASE_ACCESS_TOKEN" =~ ^sbp_ ]] || { echo "Not a PAT (sbp_*)"; exit 1; }
+          echo "PAT OK"
+
+      - name: Login
+        run: supabase login --token "$SUPABASE_ACCESS_TOKEN"
+
+      - name: Link (non-interactive)
+        run: supabase link --project-ref "$SUPABASE_PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+
+      # Optional: push migrations to remote
+      - name: Migrate
+        run: supabase db push
+
+      # Set runtime secrets for functions (avoid SUPABASE_* names)
+      - name: Set function secrets
+        run: |
+          supabase secrets set \
+            NEWS_SUPABASE_URL="${{ secrets.NEWS_SUPABASE_URL }}" \
+            NEWS_SERVICE_ROLE_KEY="${{ secrets.NEWS_SERVICE_ROLE_KEY }}"
+
+      # Deploy all core functions (add more as needed)
+      - name: Deploy ingestnews
+        run: supabase functions deploy ingestnews
+
+      - name: List functions
+        run: supabase functions list
+
+      - name: Tail logs (brief)
+        run: timeout 45s supabase functions logs ingestnews --tail || true
