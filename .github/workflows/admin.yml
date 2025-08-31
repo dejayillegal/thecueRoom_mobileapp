@@ -1,12 +1,9 @@
 name: Admin (Next.js) – Build & Deploy
-
 on:
   push:
     branches: [ main ]
-    paths:
-      - "admin/**"
+    paths: [ "admin/**", "vercel.json", ".vercel/project.json" ]
   workflow_dispatch:
-
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
@@ -16,36 +13,22 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
           cache-dependency-path: admin/package-lock.json
-
       - name: Install
         run: npm ci
-
-      - name: Write Vercel project file
+      - name: Ensure Vercel project link file
         run: |
-          mkdir -p .vercel
-          cat > .vercel/project.json <<'JSON'
-          { "orgId": "${{ secrets.VERCEL_ORG_ID }}", "projectId": "${{ secrets.VERCEL_PROJECT_ID }}" }
-          JSON
-
-      # ✅ Pull production envs directly into .env.local (picked up by Next.js)
-      - name: Pull env to .env.local
+          mkdir -p ../.vercel
+          cp ../.vercel/project.json ../.vercel/project.json || true
+      - name: Pull env to .env.local (prod)
         run: npx vercel env pull .env.local --yes --environment=production
-
-      # Optional: show which vars exist (redacted)
-      - name: List env keys
-        run: grep -E '^(NEXT_PUBLIC_|NODE_)' .env.local | sed 's/=.*$/=<redacted>/'
-
-      # Build + deploy using those envs
-      - name: Deploy (prebuilt, prod)
+      - name: Build & Deploy
         run: |
           npx vercel build --prod
           npx vercel deploy --prebuilt --prod

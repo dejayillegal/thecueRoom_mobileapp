@@ -1,6 +1,5 @@
--- Assumes pg_cron & pg_net are enabled (by prior migration or Dashboard).
+-- Assumes pg_cron & pg_net exist (local via 20250220_*; hosted via Dashboard).
 
--- Upsert project_url in Vault
 do $$
 declare sid uuid;
 begin
@@ -12,7 +11,6 @@ begin
   end if;
 end $$;
 
--- Upsert anon_key placeholder; real value set by CI later
 do $$
 declare sid uuid;
 begin
@@ -21,11 +19,9 @@ begin
   end if;
 end $$;
 
--- Remove existing job if present
 select cron.unschedule('invoke-ingestnews-every-30-min')
 where exists (select 1 from cron.job where jobname='invoke-ingestnews-every-30-min');
 
--- Schedule every 30 minutes
 select cron.schedule(
   'invoke-ingestnews-every-30-min',
   '*/30 * * * *',
