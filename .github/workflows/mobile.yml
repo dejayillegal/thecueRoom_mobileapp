@@ -11,6 +11,8 @@ jobs:
   android:
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: mobile } }
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -19,16 +21,18 @@ jobs:
           cache: npm
           cache-dependency-path: mobile/package-lock.json
 
-      - name: Install deps
+      - name: Install deps (tolerate peer issues)
         run: |
           npm ci || npm ci --legacy-peer-deps
           npx expo install --fix || true
 
-      - name: Expo login
-        uses: expo/expo-github-action@v8
+      - uses: expo/expo-github-action@v8
         with:
           eas-version: latest
-          token: ${{ secrets.EAS_TOKEN }}
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Verify login
+        run: eas whoami
 
       - name: EAS Android build (prod)
         run: eas build --platform android --profile production --non-interactive --no-wait
@@ -36,6 +40,8 @@ jobs:
   ios:
     runs-on: macos-latest
     defaults: { run: { working-directory: mobile } }
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -44,17 +50,18 @@ jobs:
           cache: npm
           cache-dependency-path: mobile/package-lock.json
 
-      - name: Install deps
+      - name: Install deps (tolerate peer issues)
         run: |
           npm ci || npm ci --legacy-peer-deps
           npx expo install --fix || true
 
-      - name: Expo login
-        uses: expo/expo-github-action@v8
+      - uses: expo/expo-github-action@v8
         with:
           eas-version: latest
-          token: ${{ secrets.EAS_TOKEN }}
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Verify login
+        run: eas whoami
 
       - name: EAS iOS build (prod)
         run: eas build --platform ios --profile production --non-interactive --no-wait
-
