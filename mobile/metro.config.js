@@ -3,30 +3,31 @@ const path = require('path');
 const { getDefaultConfig } = require('@expo/metro-config');
 
 const projectRoot = __dirname;
-const workspaceRoot = path.resolve(projectRoot, '..'); // repo root
+const workspaceRoot = path.resolve(projectRoot, '..');
 
 /** @type {import('metro-config').MetroConfig} */
 const config = getDefaultConfig(projectRoot);
 
-// 1) Watch the whole monorepo
-config.watchFolders = [workspaceRoot];
+// Watch monorepo root so imports like ../shared/... work
+config.watchFolders = Array.from(new Set([...(config.watchFolders ?? []), workspaceRoot]));
 
-// 2) Resolve modules from both /mobile and the repo root node_modules
-config.resolver.nodeModulesPaths = [
-  path.join(projectRoot, 'node_modules'),
-  path.join(workspaceRoot, 'node_modules'),
-];
-
-// 3) Follow symlinks (useful with workspaces)
-config.resolver.unstable_enableSymlinks = true;
-
-// 4) (Optional) be explicit about condition names
-config.resolver.unstable_conditionNames = [
-  'require',
-  'import',
-  'react-native',
-  'browser',
-  'default',
-];
+// Resolve modules from both /mobile and repo root node_modules
+config.resolver = {
+  ...config.resolver,
+  nodeModulesPaths: Array.from(new Set([
+    path.join(projectRoot, 'node_modules'),
+    path.join(workspaceRoot, 'node_modules'),
+  ])),
+  unstable_enableSymlinks: true,
+  // Prefer RN/browser builds over Node "main"
+  resolverMainFields: ['react-native', 'browser', 'main'],
+  unstable_conditionNames: [
+    'require',
+    'import',
+    'react-native',
+    'browser',
+    'default',
+  ],
+};
 
 module.exports = config;

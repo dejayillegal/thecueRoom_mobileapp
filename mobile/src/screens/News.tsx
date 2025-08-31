@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, Text } from 'react-native';
-import Parser from 'rss-parser';
+import { fetchRss } from '../lib/rss';
 import { theme } from '../../../shared/theme';
 
 export default function News() {
   const [items, setItems] = useState<{ title?: string }[]>([]);
 
   useEffect(() => {
-    const parser = new Parser();
-    parser.parseURL('https://ra.co/rss').then((feed) => setItems(feed.items.slice(0, 5)));
+    fetchRss('https://ra.co/rss').then((feed) => setItems(feed.items.slice(0, 5)));
   }, []);
 
   return (
