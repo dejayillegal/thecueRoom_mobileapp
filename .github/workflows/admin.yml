@@ -36,11 +36,15 @@ jobs:
           { "orgId": "${{ secrets.VERCEL_ORG_ID }}", "projectId": "${{ secrets.VERCEL_PROJECT_ID }}" }
           JSON
 
-      # Pull Vercel envs BEFORE any Next build (so Next sees Supabase envs)
-      - name: Pull env (production)
-        run: npx vercel pull --yes --environment=production
+      # ✅ Pull production envs directly into .env.local (picked up by Next.js)
+      - name: Pull env to .env.local
+        run: npx vercel env pull .env.local --yes --environment=production
 
-      # Let Vercel do the build with those envs (skip local `next build`)
+      # Optional: show which vars exist (redacted)
+      - name: List env keys
+        run: grep -E '^(NEXT_PUBLIC_|NODE_)' .env.local | sed 's/=.*$/=<redacted>/'
+
+      # Build + deploy using those envs
       - name: Deploy (prebuilt, prod)
         run: |
           npx vercel build --prod
