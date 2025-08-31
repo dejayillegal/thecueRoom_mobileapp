@@ -8,26 +8,23 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-android:
+  android:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: mobile
+    defaults: { run: { working-directory: mobile } }
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
           cache-dependency-path: mobile/package-lock.json
 
-      - name: Install deps (align with Expo SDK)
+      - name: Install deps
         run: |
-          npm ci
+          npm ci || npm ci --legacy-peer-deps
           npx expo install --fix || true
 
-      - name: Expo login (EAS)
+      - name: Expo login
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
@@ -36,12 +33,9 @@ jobs:
       - name: EAS Android build (prod)
         run: eas build --platform android --profile production --non-interactive --no-wait
 
-  build-ios:
-    # iOS builds require macOS runner
+  ios:
     runs-on: macos-latest
-    defaults:
-      run:
-        working-directory: mobile
+    defaults: { run: { working-directory: mobile } }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -50,12 +44,12 @@ jobs:
           cache: npm
           cache-dependency-path: mobile/package-lock.json
 
-      - name: Install deps (align with Expo SDK)
+      - name: Install deps
         run: |
-          npm ci
+          npm ci || npm ci --legacy-peer-deps
           npx expo install --fix || true
 
-      - name: Expo login (EAS)
+      - name: Expo login
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
@@ -63,3 +57,4 @@ jobs:
 
       - name: EAS iOS build (prod)
         run: eas build --platform ios --profile production --non-interactive --no-wait
+
