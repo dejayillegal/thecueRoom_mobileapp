@@ -1,0 +1,9 @@
+{
+  "expo": {
+    "name": "mobile",
+    "slug": "mobile",
+    "android": {
+      "package": "com.thecueroom.mobile"
+    }
+  }
+}

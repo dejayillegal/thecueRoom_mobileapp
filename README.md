@@ -56,13 +56,14 @@ Visit `http://localhost:3000`
 ---
 
 ## ☁️ Edge Functions
-- `ingestNews`: pull all feeds every 30m  
-- `generateEpk`: render + store PDFs  
-- `notifyPost`: push notifications  
-- `gigGeo`: geohash utils  
+- `ingestNews`: pull all feeds every 30m
+- `generateEpk`: render + store PDFs
+- `notifyPost`: push notifications
+- `gigGeo`: geohash utils
 
-Deploy:
+Deploy (needs `SUPABASE_ACCESS_TOKEN`):
 ```bash
+export SUPABASE_ACCESS_TOKEN=<access-token>
 supabase functions deploy ingestNews
 ```
 
