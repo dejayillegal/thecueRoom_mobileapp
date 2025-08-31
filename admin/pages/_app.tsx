@@ -1,5 +1,6 @@
 import type { AppProps } from 'next/app';
-import { SessionContextProvider, createBrowserSupabaseClient } from '@supabase/auth-helpers-react';
+import { SessionContextProvider } from '@supabase/auth-helpers-react';
+import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { useState } from 'react';
 import '../styles.css';
 
