@@ -10,9 +10,7 @@ on:
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: admin
+    defaults: { run: { working-directory: admin } }
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -34,7 +32,6 @@ jobs:
           npm run lint --if-present
           npm run build
 
-      # Provide org/project so no interactive link/login is needed
       - name: Write Vercel project file
         run: |
           mkdir -p .vercel
@@ -42,12 +39,10 @@ jobs:
           { "orgId": "${{ secrets.VERCEL_ORG_ID }}", "projectId": "${{ secrets.VERCEL_PROJECT_ID }}" }
           JSON
 
-      # Use env-based token instead of --token flag
-      - name: Pull env (production)
+      - name: Pull env (prod)
         run: npx vercel pull --yes --environment=production
 
       - name: Deploy (prebuilt, prod)
         run: |
           npx vercel build --prod
           npx vercel deploy --prebuilt --prod
-
