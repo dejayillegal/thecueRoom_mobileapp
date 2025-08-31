@@ -1,3 +1,5 @@
-[functions.ingestNews]
+[functions.ingestnews]
 verify_jwt = false
+
+[[functions.ingestnews.crons]]
 schedule = "*/30 * * * *"

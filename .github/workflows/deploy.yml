@@ -18,4 +18,4 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - uses: supabase/setup-cli@v1
-      - run: supabase functions deploy ingestNews
+      - run: supabase functions deploy ingestnews
