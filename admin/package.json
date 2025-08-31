@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "jest"
+    "test": "jest",
+    "lint": "next lint"
   },
   "dependencies": {
     "@supabase/auth-helpers-nextjs": "^0.10.0",
@@ -19,6 +20,7 @@
   "devDependencies": {
     "@types/node": "^20.12.7",
     "@types/react": "^18.2.15",
+    "eslint": "8.57.0",
     "ts-jest": "^29.1.1",
     "typescript": "^5.4.5"
   }
