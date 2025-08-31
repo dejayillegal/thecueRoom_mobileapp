@@ -63,9 +63,10 @@ Visit `http://localhost:3000`
 
 Deploy (needs `SUPABASE_ACCESS_TOKEN`):
 ```bash
-export SUPABASE_ACCESS_TOKEN=<access-token>
+export SUPABASE_ACCESS_TOKEN=<access-token> # locally
 supabase functions deploy ingestNews
 ```
+GitHub Actions uses a real token via `SUPABASE_ACCESS_TOKEN` secret (see `.github/workflows/deploy.yml`).
 
 ---
 
