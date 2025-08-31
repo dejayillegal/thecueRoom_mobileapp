@@ -19,14 +19,12 @@ jobs:
           version: 2.39.2
 
       - name: Login
-        run: supabase login --token "${SUPABASE_ACCESS_TOKEN}"
+        run: supabase login --token "$SUPABASE_ACCESS_TOKEN"
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
       - name: Link
-        run: supabase link --project-ref "${SUPABASE_PROJECT_REF}"
-        env:
-          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+        run: supabase link --project-ref heaztitsbnotkozmhubw
 
       - name: Set runtime secrets
         run: |
