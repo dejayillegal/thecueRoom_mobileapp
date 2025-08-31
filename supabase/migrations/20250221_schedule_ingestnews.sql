@@ -1,4 +1,6 @@
--- Ensure pg_cron & pg_net are enabled in Studio > Database > Extensions before running.
+-- Ensure pg_cron & pg_net are available
+create extension if not exists pg_cron with schema extensions;
+create extension if not exists pg_net with schema extensions;
 
 -----------------------------
 -- Upsert Vault: project_url
