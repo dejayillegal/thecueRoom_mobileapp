@@ -1,0 +1,43 @@
+name: Admin (Next.js) – Build & Deploy
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "admin/**"
+  workflow_dispatch:
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: admin
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: admin/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint & Build
+        run: |
+          npm run lint --if-present
+          npm run build
+
+      # --- Vercel Deploy (Production) ---
+      - name: Vercel Deploy
+        run: |
+          npx vercel pull --yes --environment=production --token "$VERCEL_TOKEN"
+          npx vercel build --prod --token "$VERCEL_TOKEN"
+          npx vercel deploy --prebuilt --prod --token "$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

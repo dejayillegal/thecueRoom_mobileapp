@@ -1,0 +1,65 @@
+name: Mobile (Expo EAS) – Android & iOS builds
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "mobile/**"
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install deps (align with Expo SDK)
+        run: |
+          npm ci
+          npx expo install --fix || true
+
+      - name: Expo login (EAS)
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EAS_TOKEN }}
+
+      - name: EAS Android build (prod)
+        run: eas build --platform android --profile production --non-interactive --no-wait
+
+  build-ios:
+    # iOS builds require macOS runner
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install deps (align with Expo SDK)
+        run: |
+          npm ci
+          npx expo install --fix || true
+
+      - name: Expo login (EAS)
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EAS_TOKEN }}
+
+      - name: EAS iOS build (prod)
+        run: eas build --platform ios --profile production --non-interactive --no-wait

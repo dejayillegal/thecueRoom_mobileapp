@@ -1,0 +1,17 @@
+name: Cron – invoke ingestnews every 30m
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+jobs:
+  call:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Invoke
+        run: |
+          curl -sS -X POST \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.ANON_KEY }}" \
+            https://heaztitsbnotkozmhubw.supabase.co/functions/v1/ingestnews \
+            || exit 1
