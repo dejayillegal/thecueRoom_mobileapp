@@ -12,12 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: admin } }
     env:
+      NODE_ENV: production
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -27,11 +29,6 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Lint & Build
-        run: |
-          npm run lint --if-present
-          npm run build
-
       - name: Write Vercel project file
         run: |
           mkdir -p .vercel
@@ -39,9 +36,11 @@ jobs:
           { "orgId": "${{ secrets.VERCEL_ORG_ID }}", "projectId": "${{ secrets.VERCEL_PROJECT_ID }}" }
           JSON
 
-      - name: Pull env (prod)
+      # Pull Vercel envs BEFORE any Next build (so Next sees Supabase envs)
+      - name: Pull env (production)
         run: npx vercel pull --yes --environment=production
 
+      # Let Vercel do the build with those envs (skip local `next build`)
       - name: Deploy (prebuilt, prod)
         run: |
           npx vercel build --prod

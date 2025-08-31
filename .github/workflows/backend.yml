@@ -18,15 +18,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
       - uses: supabase/setup-cli@v1
-        with:
-          version: 2.39.2  # no "v" prefix
+        with: { version: 2.39.2 }
 
       - name: Validate PAT shape
         run: |
           [[ "$SUPABASE_ACCESS_TOKEN" =~ ^sbp_ ]] || { echo "Not a PAT (sbp_*)"; exit 1; }
-          echo "PAT OK"
 
       - name: Login
         run: supabase login --token "$SUPABASE_ACCESS_TOKEN"
@@ -37,7 +34,20 @@ jobs:
       - name: Push migrations (auto-confirm)
         run: yes | supabase db push
 
-      - name: Set function secrets (avoid SUPABASE_* names)
+      # Upsert anon_key into Vault after db push (no hardcoding in repo)
+      - name: Set anon_key in Vault
+        run: |
+          supabase db query "do $$ declare sid uuid; begin
+            select id into sid from vault.decrypted_secrets where name='anon_key' limit 1;
+            if sid is null then
+              perform vault.create_secret('${{ secrets.ANON_KEY }}','anon_key','Anon key for cron calls');
+            else
+              perform vault.update_secret(sid,'${{ secrets.ANON_KEY }}','anon_key','Anon key for cron calls');
+            end if;
+          end $$;"
+
+      # Function runtime secrets (names must NOT start with SUPABASE_)
+      - name: Set function secrets
         run: |
           supabase secrets set \
             NEWS_SUPABASE_URL="https://${SUPABASE_PROJECT_REF}.supabase.co" \
