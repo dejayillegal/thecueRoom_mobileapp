@@ -1,5 +1,4 @@
 name: Deploy ingestnews
-
 on:
   workflow_dispatch:
   push:
@@ -18,21 +17,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Deno (fixes PATH hacks & TLS 'invalid peer certificate' flakiness)
-      - uses: denoland/setup-deno@v1
-        with:
-          deno-version: v1.x
-
-      # Supabase CLI (avoid npx so the token persists in ~/.supabase)
+      # ✅ Correct: no "v" prefix here
       - uses: supabase/setup-cli@v1
         with:
-          version: v2.39.2
+          version: 2.39.2
 
-      # Sanity: fail early if the token isn't a PAT
+      # Optional: bail out early if PAT is wrong
       - name: Validate PAT format
         run: |
           if [[ ! "$SUPABASE_ACCESS_TOKEN" =~ ^sbp_ ]]; then
-            echo "❌ SUPABASE_ACCESS_TOKEN is not a Supabase PAT (must start with sbp_)"
+            echo "❌ SUPABASE_ACCESS_TOKEN must be a Supabase Personal Access Token starting with sbp_"
             exit 1
           fi
           echo "✅ PAT shape looks good"
@@ -40,13 +34,10 @@ jobs:
       - name: Login
         run: supabase login --token "$SUPABASE_ACCESS_TOKEN"
 
-      - name: Who am I
-        run: supabase whoami
-
       - name: Link project
         run: supabase link --project-ref "$SUPABASE_PROJECT_REF"
 
-      # Set runtime secrets (NOTE: names must NOT start with SUPABASE_)
+      # Runtime secrets for your function (names must NOT start with SUPABASE_)
       - name: Set function secrets
         run: |
           supabase secrets set \
@@ -59,5 +50,3 @@ jobs:
       - name: List functions
         run: supabase functions list
 
-      - name: Tail logs briefly
-        run: timeout 60s supabase functions logs ingestnews --tail || true
