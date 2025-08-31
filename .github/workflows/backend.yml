@@ -31,6 +31,10 @@ jobs:
       - name: Link (non-interactive)
         run: supabase link --project-ref "$SUPABASE_PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
 
+      - name: Verify extensions (pg_cron & pg_net)
+        run: |
+          supabase db query "select extname from pg_extension where extname in ('pg_cron','pg_net');"
+
       - name: Push migrations (auto-confirm)
         run: yes | supabase db push
 
