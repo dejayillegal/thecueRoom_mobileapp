@@ -16,7 +16,7 @@ jobs:
 
       - uses: supabase/setup-cli@v1
         with:
-          version: v2.39.2
+          version: 2.39.2
 
       - name: Login
         run: supabase login --token "${SUPABASE_ACCESS_TOKEN}"
