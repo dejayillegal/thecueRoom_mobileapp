@@ -1,39 +1,26 @@
--- Ensure pg_net is available (if not, enable it in Dashboard → Database → Extensions)
--- This migration assumes pg_cron is available in the project.
+-- supabase/migrations/20250221_schedule_ingestnews.sql  (update this file)
+-- Enable pg_net via Dashboard (Extensions) beforehand.
 
--- Store the project URL and a token we will use to call the function.
--- For public (verify_jwt = false) functions, using the anon key is acceptable.
-insert into vault.secrets (name, secret)
-values ('project_url', 'https://heaztitsbnotkozmhubw.supabase.co')
-on conflict (name) do nothing;
+-- Store (or noop if exists)
+select vault.create_secret('https://heaztitsbnotkozmhubw.supabase.co', 'project_url') on conflict do nothing;
+select vault.create_secret('REPLACE_WITH_PUBLISHABLE_ANON_KEY', 'anon_key') on conflict do nothing;
 
-insert into vault.secrets (name, secret)
-values ('anon_key', 'REPLACE_WITH_PUBLISHABLE_ANON_KEY')
-on conflict (name) do nothing;
+-- Replace existing cron job if present
+select cron.unschedule('invoke-ingestnews-every-30-min')
+where exists (select 1 from cron.job where jobname='invoke-ingestnews-every-30-min');
 
--- Drop any existing job with the same name to avoid duplicates.
-select cron.unschedule('invoke-ingestnews-every-30-min') 
-where exists (select 1 from cron.job where jobname = 'invoke-ingestnews-every-30-min');
-
--- Schedule: every 30 minutes call the Edge Function /functions/v1/ingestnews
+-- Schedule: every 30 minutes call the function
 select cron.schedule(
   'invoke-ingestnews-every-30-min',
   '*/30 * * * *',
   $$
-    select
-      net.http_post(
-        url := (select decrypted_secret from vault.decrypted_secrets where name='project_url') || '/functions/v1/ingestnews',
-        headers := jsonb_build_object(
-          'Content-Type','application/json',
-          'Authorization','Bearer ' || (select decrypted_secret from vault.decrypted_secrets where name='anon_key')
-        ),
-        body := jsonb_build_object('scheduled_at', now())
-      ) as request_id;
+    select net.http_post(
+      url := (select decrypted_secret from vault.decrypted_secrets where name='project_url') || '/functions/v1/ingestnews',
+      headers := jsonb_build_object(
+        'Content-Type','application/json',
+        'Authorization','Bearer ' || (select decrypted_secret from vault.decrypted_secrets where name='anon_key')
+      ),
+      body := jsonb_build_object('scheduled_at', now())
+    );
   $$
 );
-
--- Optional visibility while debugging:
--- select * from cron.job;
--- select * from cron.job_run_details order by start_time desc limit 20;
--- select * from net._http_response order by created desc limit 20;
-

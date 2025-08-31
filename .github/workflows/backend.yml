@@ -1,4 +1,4 @@
-name: Backend (Supabase) – Link, Migrate, Deploy Functions
+name: Backend (Supabase) – Migrate & Deploy Functions
 
 on:
   push:
@@ -11,16 +11,17 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}   # must start with sbp_
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}   # PAT sbp_...
       SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}     # heaztitsbnotkozmhubw
-      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}     # DB password (not anon/service key)
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}     # database password
+      DENO_TLS_CA_STORE: system
+
     steps:
       - uses: actions/checkout@v4
 
       - uses: supabase/setup-cli@v1
         with:
-          # no "v" prefix
-          version: 2.39.2
+          version: 2.39.2  # no "v" prefix
 
       - name: Validate PAT shape
         run: |
@@ -30,21 +31,20 @@ jobs:
       - name: Login
         run: supabase login --token "$SUPABASE_ACCESS_TOKEN"
 
-      - name: Link (non-interactive)
+      # Non-interactive link (uses DB password to skip prompt)
+      - name: Link project
         run: supabase link --project-ref "$SUPABASE_PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
 
-      # Optional: push migrations to remote
-      - name: Migrate
+      - name: Push migrations
         run: supabase db push
 
-      # Set runtime secrets for functions (avoid SUPABASE_* names)
+      # Function runtime secrets (avoid SUPABASE_* names)
       - name: Set function secrets
         run: |
           supabase secrets set \
-            NEWS_SUPABASE_URL="${{ secrets.NEWS_SUPABASE_URL }}" \
+            NEWS_SUPABASE_URL="https://${SUPABASE_PROJECT_REF}.supabase.co" \
             NEWS_SERVICE_ROLE_KEY="${{ secrets.NEWS_SERVICE_ROLE_KEY }}"
 
-      # Deploy all core functions (add more as needed)
       - name: Deploy ingestnews
         run: supabase functions deploy ingestnews
 

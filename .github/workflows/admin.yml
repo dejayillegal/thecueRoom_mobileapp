@@ -13,10 +13,13 @@ jobs:
     defaults:
       run:
         working-directory: admin
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -25,24 +28,26 @@ jobs:
 
       - name: Install
         run: npm ci
-      - name: Pull Vercel Environment
-        run: npx vercel pull --yes --environment=production --token "$VERCEL_TOKEN"
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Lint & Build
         run: |
           npm run lint --if-present
           npm run build
 
-      # --- Vercel Deploy (Production) ---
-      - name: Vercel Deploy
+      # Provide org/project so no interactive link/login is needed
+      - name: Write Vercel project file
         run: |
-          npx vercel build --prod --token "$VERCEL_TOKEN"
-          npx vercel deploy --prebuilt --prod --token "$VERCEL_TOKEN"
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          mkdir -p .vercel
+          cat > .vercel/project.json <<'JSON'
+          { "orgId": "${{ secrets.VERCEL_ORG_ID }}", "projectId": "${{ secrets.VERCEL_PROJECT_ID }}" }
+          JSON
+
+      # Use env-based token instead of --token flag
+      - name: Pull env (production)
+        run: npx vercel pull --yes --environment=production
+
+      - name: Deploy (prebuilt, prod)
+        run: |
+          npx vercel build --prod
+          npx vercel deploy --prebuilt --prod
+
