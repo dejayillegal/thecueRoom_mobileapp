@@ -1,12 +1,9 @@
 name: Backend (Supabase) – Migrate & Deploy Functions
-
 on:
   push:
     branches: [ main ]
-    paths:
-      - "supabase/**"
+    paths: [ "supabase/**" ]
   workflow_dispatch:
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -15,31 +12,21 @@ jobs:
       SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}     # heaztitsbnotkozmhubw
       SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}     # DB password
       DENO_TLS_CA_STORE: system
-
     steps:
       - uses: actions/checkout@v4
       - uses: supabase/setup-cli@v1
         with: { version: 2.39.2 }
-
-      - name: Validate PAT shape
-        run: |
-          [[ "$SUPABASE_ACCESS_TOKEN" =~ ^sbp_ ]] || { echo "Not a PAT (sbp_*)"; exit 1; }
-
+      - name: Validate PAT
+        run: '[[ "$SUPABASE_ACCESS_TOKEN" =~ ^sbp_ ]] || (echo "Not a PAT"; exit 1)'
       - name: Login
         run: supabase login --token "$SUPABASE_ACCESS_TOKEN"
-
       - name: Link (non-interactive)
         run: supabase link --project-ref "$SUPABASE_PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
-
-      - name: Verify extensions (pg_cron & pg_net)
-        run: |
-          supabase db query "select extname from pg_extension where extname in ('pg_cron','pg_net');"
-
+      - name: Verify hosted extensions
+        run: supabase db query "select extname from pg_extension where extname in ('pg_cron','pg_net');"
       - name: Push migrations (auto-confirm)
         run: yes | supabase db push
-
-      # Upsert anon_key into Vault after db push (no hardcoding in repo)
-      - name: Set anon_key in Vault
+      - name: Upsert anon_key in Vault (from secret)
         run: |
           supabase db query "do $$ declare sid uuid; begin
             select id into sid from vault.decrypted_secrets where name='anon_key' limit 1;
@@ -49,19 +36,14 @@ jobs:
               perform vault.update_secret(sid,'${{ secrets.ANON_KEY }}','anon_key','Anon key for cron calls');
             end if;
           end $$;"
-
-      # Function runtime secrets (names must NOT start with SUPABASE_)
-      - name: Set function secrets
+      - name: Set function runtime secrets
         run: |
           supabase secrets set \
             NEWS_SUPABASE_URL="https://${SUPABASE_PROJECT_REF}.supabase.co" \
             NEWS_SERVICE_ROLE_KEY="${{ secrets.NEWS_SERVICE_ROLE_KEY }}"
-
       - name: Deploy ingestnews
         run: supabase functions deploy ingestnews
-
       - name: List functions
         run: supabase functions list
-
       - name: Tail logs (brief)
         run: timeout 45s supabase functions logs ingestnews --tail || true

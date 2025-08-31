@@ -1,66 +1,42 @@
 name: Mobile (Expo EAS) – Android & iOS builds
-
 on:
   push:
     branches: [ main ]
-    paths:
-      - "mobile/**"
+    paths: [ "mobile/**" ]
   workflow_dispatch:
-
 jobs:
   android:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: mobile
-    env:
-      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+    defaults: { run: { working-directory: mobile } }
+    env: { EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }} }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-          cache-dependency-path: mobile/package-lock.json
+        with: { node-version: 20, cache: npm, cache-dependency-path: mobile/package-lock.json }
       - name: Install deps
         run: |
           npm ci || npm ci --legacy-peer-deps
           npx expo install --fix || true
       - uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
+        with: { eas-version: latest, token: ${{ secrets.EXPO_TOKEN }} }
       - name: Verify login
         run: eas whoami
       - name: EAS Android build (prod)
         run: eas build --platform android --profile production --non-interactive --no-wait
-
   ios:
     runs-on: macos-latest
-    defaults:
-      run:
-        working-directory: mobile
-    env:
-      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+    defaults: { run: { working-directory: mobile } }
+    env: { EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }} }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-          cache-dependency-path: mobile/package-lock.json
+        with: { node-version: 20, cache: npm, cache-dependency-path: mobile/package-lock.json }
       - name: Install deps
         run: |
           npm ci || npm ci --legacy-peer-deps
           npx expo install --fix || true
       - uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
+        with: { eas-version: latest, token: ${{ secrets.EXPO_TOKEN }} }
       - name: Verify login
         run: eas whoami
       - name: EAS iOS build (prod)
