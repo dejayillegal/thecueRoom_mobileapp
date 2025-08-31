@@ -3,13 +3,14 @@
   "private": true,
   "workspaces": [
     "shared",
-    "supabase"
+    "supabase",
+    "admin"
   ],
   "scripts": {
     "lint": "eslint . --ext .ts,.tsx,.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "jest",
-    "build": "echo 'build step placeholder'",
+    "build": "npm run build -w admin",
     "deno:check": "npm --prefix supabase run typecheck:deno"
   },
   "devDependencies": {
