@@ -6,7 +6,7 @@ import Studio from './src/screens/Studio';
 import Radar from './src/screens/Radar';
 import News from './src/screens/News';
 import Profile from './src/screens/Profile';
-import { theme } from '../shared/theme';
+import { theme } from '@shared/theme';
 
 const Tab = createBottomTabNavigator();
 
