@@ -1,25 +1,26 @@
 export const theme = {
   colors: {
-    bg: '#080808',
-    fg: '#E6E6E6',
-    muted: '#0F0F0F',
-    grid: '#161616',
-    card: '#0B0B0B',
-    border: '#151515',
-    lime: '#D1E231',
-    purple: '#873BBF',
-    white: '#FFFFFF'
+    background: '#0B0F1A',
+    surface: '#121829',
+    primary: '#4F46E5',
+    secondary: '#06B6D4',
+    text: '#E5E7EB',
+    muted: '#94A3B8',
+    success: '#22C55E',
+    warning: '#F59E0B',
+    danger: '#EF4444',
+  },
+  spacing: (n: number) => n * 8,
+  radius: {
+    sm: 8,
+    md: 12,
+    lg: 16,
+    xl: 24,
   },
   fonts: {
-    heading: 'Inter-Black',
-    body: 'Inter-Regular',
-    mono: 'SourceCodePro-Regular'
+    regular: 'System',
+    medium: 'System',
+    bold: 'System',
+    mono: 'Courier',
   },
-  animations: {
-    driftSlow: 36000,
-    driftMed: 28000,
-    blink: 10000
-  }
-} as const;
-
-export type Theme = typeof theme;
+};
