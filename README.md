@@ -56,7 +56,7 @@ Visit `http://localhost:3000`
 ---
 
 ## ☁️ Edge Functions
-- `ingestNews`: pull all feeds every 30m
+- `ingestnews`: pull all feeds every 30m
 - `generateEpk`: render + store PDFs
 - `notifyPost`: push notifications
 - `gigGeo`: geohash utils
@@ -64,7 +64,7 @@ Visit `http://localhost:3000`
 Deploy (needs `SUPABASE_ACCESS_TOKEN`):
 ```bash
 export SUPABASE_ACCESS_TOKEN=<access-token> # locally
-supabase functions deploy ingestNews
+supabase functions deploy ingestnews
 ```
 GitHub Actions uses a real token via `SUPABASE_ACCESS_TOKEN` secret (see `.github/workflows/deploy.yml`).
 
