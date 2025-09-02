@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "clean:mobile": "rm -rf node_modules package-lock.json .expo .cache .turbo ios/Pods ios/Podfile.lock android/.gradle android/build",
+    "start": "expo start",
     "dev": "expo start -c",
     "test": "jest",
     "postinstall": "npx expo install --fix || true",
