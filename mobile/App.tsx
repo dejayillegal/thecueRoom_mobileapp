@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ActivityIndicator, View } from 'react-native';
 import { theme } from '@shared/theme';
 import { supabase } from './src/lib/supabase';
@@ -72,26 +73,28 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer theme={navTheme}>
-      <Stack.Navigator
-        screenOptions={{
-          headerStyle: { backgroundColor: theme.colors.surface },
-          headerTintColor: theme.colors.text,
-          contentStyle: { backgroundColor: theme.colors.background }
-        }}
-      >
-        {!isAuthed ? (
-          <>
-            <Stack.Screen name="Landing" component={Landing} options={{ headerShown: false }} />
-            <Stack.Screen name="Login" component={Login} options={{ title: 'Sign in' }} />
-          </>
-        ) : null}
-        <Stack.Screen
-          name="Main"
-          component={MainTabs}
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <NavigationContainer theme={navTheme}>
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: { backgroundColor: theme.colors.surface },
+            headerTintColor: theme.colors.text,
+            contentStyle: { backgroundColor: theme.colors.background }
+          }}
+        >
+          {!isAuthed ? (
+            <>
+              <Stack.Screen name="Landing" component={Landing} options={{ headerShown: false }} />
+              <Stack.Screen name="Login" component={Login} options={{ title: 'Sign in' }} />
+            </>
+          ) : null}
+          <Stack.Screen
+            name="Main"
+            component={MainTabs}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }
