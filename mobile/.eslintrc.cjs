@@ -14,11 +14,11 @@ module.exports = {
   settings: {
     react: { version: 'detect' },
     'import/resolver': {
-      typescript: { project: ['./tsconfig.json'] },
-      node: { extensions: ['.js','.jsx','.ts','.tsx'] }
+      typescript: { project: ['./tsconfig.json'] },        // <-- resolves @/…
+      node: { extensions: ['.js', '.jsx', '.ts', '.tsx'] }, // <-- resolves node-style
     }
   },
-  ignorePatterns: ['node_modules/','android/','ios/','.expo/','dist/','build/'],
+  ignorePatterns: ['node_modules/', 'android/', 'ios/', '.expo/', 'dist/', 'build/'],
   rules: {
     'react/react-in-jsx-scope': 'off',
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],

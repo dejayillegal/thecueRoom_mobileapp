@@ -23,6 +23,7 @@
     "expo-av": "~15.1.7",
     "expo-linking": "~7.1.7",
     "expo-secure-store": "~13.0.2",
+    "fast-xml-parser": "5.2.5",
     "react": "19.0.0",
     "react-native": "0.79.5",
     "react-native-gesture-handler": "~2.24.0",
@@ -32,8 +33,7 @@
     "react-native-screens": "~4.11.1",
     "react-native-svg": "15.11.2",
     "react-native-url-polyfill": "^2.0.0",
-    "zustand": "^4.5.2",
-    "fast-xml-parser": "5.2.5"
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@testing-library/jest-native": "^5.4.3",
@@ -44,6 +44,9 @@
     "@typescript-eslint/eslint-plugin": "8.41.0",
     "@typescript-eslint/parser": "8.41.0",
     "eslint": "8.57.1",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-import-resolver-typescript": "4.4.4",
+    "eslint-plugin-import": "2.32.0",
     "eslint-plugin-jest": "27.9.0",
     "eslint-plugin-react": "7.33.2",
     "eslint-plugin-react-hooks": "4.6.0",
