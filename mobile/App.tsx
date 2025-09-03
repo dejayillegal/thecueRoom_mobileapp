@@ -74,7 +74,7 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <NavigationContainer theme={navTheme}>
+      <NavigationContainer testID="nav-root" theme={navTheme}>
         <Stack.Navigator
           screenOptions={{
             headerStyle: { backgroundColor: theme.colors.surface },

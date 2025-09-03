@@ -1,0 +1,29 @@
+name: Mobile CI
+
+on:
+  push:
+    paths:
+      - 'mobile/**'
+      - '.github/workflows/ci-mobile.yml'
+  pull_request:
+    paths:
+      - 'mobile/**'
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install mobile deps
+        working-directory: mobile
+        run: npm ci
+      - name: Pod install (macOS)
+        working-directory: mobile
+        run: npx pod-install
+      - name: Run tests (no skipping)
+        working-directory: mobile
+        run: npm test
