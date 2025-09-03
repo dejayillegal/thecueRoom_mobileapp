@@ -1,10 +1,12 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
+    "name": "thecueRoom",
+    "slug": "thecueRoom",
     "android": {
       "package": "com.thecueroom.mobile"
     },
-    "jsEngine": "hermes"
+    "jsEngine": "hermes",
+    "plugins": ["expo-router"],
+    "web": { "bundler": "metro" }
   }
 }

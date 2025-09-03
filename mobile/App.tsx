@@ -8,7 +8,7 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView style={{ flex: 1, backgroundColor: '#0B0B0B' }}>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12 }}>
-          <Text style={{ color: '#D1FF3D', fontSize: 20 }}>thecueRoom — Mobile (Safe Boot)</Text>
+          <Text style={{ color: '#D1FF3D', fontSize: 20 }}>thecueRoom — Mobile/Web (Safe Boot)</Text>
           <LazyShell />
         </View>
       </SafeAreaView>
