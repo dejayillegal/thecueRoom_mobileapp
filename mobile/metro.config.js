@@ -33,12 +33,21 @@ config.resolver = {
   ],
 };
 
-// Throw if Node core modules sneak in
-const forbidden = new Set(['http','https','url','fs','path','zlib','stream','crypto','util','net','tls']);
+// Ensure single instance of each RN module (avoid duplicate copies in monorepo)
+config.resolver.disableHierarchicalLookup = true;
+
+/**
+ * Throw if a Node builtin sneaks into the RN bundle.
+ * This surfaces "why Hermes blew up" with a clear message.
+ */
+const FORBIDDEN = new Set([
+  'http','https','url','fs','path','zlib','stream','crypto','util','net','tls','events'
+]);
+
 const origResolveRequest = config.resolver.resolveRequest;
 config.resolver.resolveRequest = (ctx, moduleName, platform) => {
-  if (forbidden.has(moduleName)) {
-    throw new Error(`[mobile] Node builtin "${moduleName}" imported – not supported in React Native.`);
+  if (FORBIDDEN.has(moduleName)) {
+    throw new Error(`[mobile] Node builtin "${moduleName}" imported – not supported in React Native/Hermes.`);
   }
   return origResolveRequest
     ? origResolveRequest(ctx, moduleName, platform)
