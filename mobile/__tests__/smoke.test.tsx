@@ -4,5 +4,5 @@ import App from '../App';
 
 test('boots', () => {
   const { getByText } = render(<App />);
-  expect(getByText(/Mobile \(Safe Boot\)/i)).toBeTruthy();
+  expect(getByText(/Mobile\/Web \(Safe Boot\)/i)).toBeTruthy();
 });
