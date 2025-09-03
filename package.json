@@ -12,7 +12,9 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "jest",
     "build": "npm run build -w admin",
-    "deno:check": "npm --prefix supabase run typecheck:deno"
+    "deno:check": "npm --prefix supabase run typecheck:deno",
+    "test:mobile": "npm --prefix mobile run test",
+    "test:mobile:watch": "npm --prefix mobile run test:watch"
   },
   "devDependencies": {
     "@types/jest": "29.5.11",
