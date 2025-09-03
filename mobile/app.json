@@ -4,6 +4,7 @@
     "slug": "mobile",
     "android": {
       "package": "com.thecueroom.mobile"
-    }
+    },
+    "jsEngine": "hermes"
   }
 }

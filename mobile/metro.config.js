@@ -20,7 +20,7 @@ config.resolver = {
   ])),
   unstable_enableSymlinks: true,
   // Prefer RN/browser builds over Node "main"
-  resolverMainFields: ['react-native', 'browser', 'module', 'main'],
+  resolverMainFields: ['react-native', 'browser', 'main'],
   extraNodeModules: {
     '@shared': path.join(workspaceRoot, 'shared'),
   },
