@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, Text } from 'react-native';
-import { fetchRss } from '../lib/rss';
+import { fetchRss, type FeedItem } from '@/lib/rss';
 import { theme } from '../../../shared/theme';
 
 export default function News() {
-  const [items, setItems] = useState<{ title?: string }[]>([]);
+  const [items, setItems] = useState<FeedItem[]>([]);
 
   useEffect(() => {
-    fetchRss('https://ra.co/rss').then((feed) => setItems(feed.items.slice(0, 5)));
+    fetchRss('https://ra.co/rss').then((list) => setItems(list.slice(0, 5)));
   }, []);
 
   return (

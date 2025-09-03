@@ -1,7 +1,6 @@
-// jest-expo + RN libs transformed correctly
 module.exports = {
   preset: 'jest-expo',
-  testEnvironment: 'jsdom',
+  testEnvironment: 'node',
   transform: { '^.+\\.(js|jsx|ts|tsx)$': require.resolve('babel-jest') },
   transformIgnorePatterns: [
     'node_modules/(?!(react-native'
@@ -15,6 +14,6 @@ module.exports = {
       + ')/)'
   ],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
-  moduleFileExtensions: ['ts','tsx','js','jsx','json']
+  moduleFileExtensions: ['ts','tsx','js','jsx','json'],
+  testMatch: ['**/__tests__/**/*.(test|spec).(ts|tsx|js)'],
 };
-

@@ -1,6 +1,6 @@
 // @ts-check
 const path = require('path');
-const { getDefaultConfig } = require('@expo/metro-config');
+const { getDefaultConfig } = require('expo/metro-config');
 
 const projectRoot = __dirname;
 const workspaceRoot = path.resolve(projectRoot, '..');
@@ -31,6 +31,18 @@ config.resolver = {
     'browser',
     'default',
   ],
+};
+
+// Throw if Node core modules sneak in
+const forbidden = new Set(['http','https','url','fs','path','zlib','stream','crypto','util','net','tls']);
+const origResolveRequest = config.resolver.resolveRequest;
+config.resolver.resolveRequest = (ctx, moduleName, platform) => {
+  if (forbidden.has(moduleName)) {
+    throw new Error(`[mobile] Node builtin "${moduleName}" imported – not supported in React Native.`);
+  }
+  return origResolveRequest
+    ? origResolveRequest(ctx, moduleName, platform)
+    : require('metro-resolver').resolve(ctx, moduleName, platform);
 };
 
 module.exports = config;

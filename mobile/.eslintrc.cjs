@@ -2,21 +2,26 @@ module.exports = {
   root: true,
   env: { es2022: true, node: true, jest: true },
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'react', 'react-native', 'jest'],
+  plugins: ['@typescript-eslint', 'react', 'react-native', 'jest', 'import'],
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:react-hooks/recommended',
+    'plugin:import/typescript',
     'prettier'
   ],
-  settings: { react: { version: 'detect' } },
-  ignorePatterns: ['node_modules/', 'android/', 'ios/', '.expo/', 'dist/', 'build/'],
-  overrides: [
-    { files: ['*.ts','*.tsx'], parserOptions: { project: false } }
-  ],
+  settings: {
+    react: { version: 'detect' },
+    'import/resolver': {
+      typescript: { project: ['./tsconfig.json'] },
+      node: { extensions: ['.js','.jsx','.ts','.tsx'] }
+    }
+  },
+  ignorePatterns: ['node_modules/','android/','ios/','.expo/','dist/','build/'],
   rules: {
-    'react/react-in-jsx-scope': 'off'
+    'react/react-in-jsx-scope': 'off',
+    '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+    'import/no-unresolved': 'error'
   }
 };
-
